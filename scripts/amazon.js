@@ -1,4 +1,4 @@
-import {Cart} from '../data/cart.js';
+import {Cart, addToCart} from '../data/cart.js';
 import { products } from '../data/products.js';
 
 let productHtml = '';
@@ -59,33 +59,22 @@ products.forEach((product) => {
 document.querySelector('.js-products-grid')
   .innerHTML = productHtml;
 
+function updateCart() {
+  let cartQuantity = 0;
+
+  Cart.forEach((item) => {
+    cartQuantity += item.quantity;
+  });
+  document.querySelector('.js-cart-quantity')
+    .innerHTML = cartQuantity;
+};
+
 document.querySelectorAll('.js-add-to-cart')
   .forEach((button) => {
     button.addEventListener('click', () => {
       const productid = button.dataset.productId;
 
-      let matchingItem;
-
-      Cart.forEach((item) => {
-        if(productid === item.productId) {
-          matchingItem = item;
-        }
-      });
-
-      if (matchingItem) {
-        matchingItem.quantity += 1;
-      } else {
-        Cart.push({
-          productId: productid,
-          quantity: 1
-        }); 
-      }
-
-      let cartQuantity = 0;
-      Cart.forEach((item) => {
-        cartQuantity += item.quantity;
-      });
-      document.querySelector('.js-cart-quantity')
-        .innerHTML = cartQuantity;
+      addToCart(productid);
+      updateCart();
     })
   });
